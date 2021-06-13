@@ -11,7 +11,7 @@ date_v=$(date -d $arg_2 +"%Y-%m-%d") # date_v is the ending date
 awk -F'[, ]' -v date_v="$date_v" -v date_u="$date_u" '{
       if ($3 <= date_v && $3 >= date_u)
          print $1, $3
-   }' /home/attendance.log >properAtt.txt
+   }' /home/attendance-log.txt >properAtt.txt
 
 DATES=$(awk '!($2 in a){a[$2];print $2}' properAtt.txt) # An array containing the dates that we actually need to look for
 
