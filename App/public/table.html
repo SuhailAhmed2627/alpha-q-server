@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>MoM</title>
+      <style>
+         * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+         }
+
+         body {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            background: black;
+            color: white;
+            font-family: "Montserrat", sans-serif;
+            justify-content: center;
+            flex-direction: column;
+         }
+
+         .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+         }
+
+         .title {
+            text-align: center;
+            width: 700px;
+            font-size: 50px;
+            padding-bottom: 30px;
+         }
+
+         #table {
+            border-collapse: collapse;
+            padding: 10px;
+         }
+         th,
+         td {
+            width: 300px;
+            border: 1px solid green;
+            padding: 0.5rem;
+            text-align: left;
+         }
+
+         select {
+            color: white;
+            background-color: #21ba45;
+            align-self: center;
+            font-size: 20px;
+            width: 200px;
+            border-radius: 5px;
+         }
+
+         button {
+            color: white;
+            background-color: #21ba45;
+            align-self: center;
+            font-size: 20px;
+            width: 100px;
+            border-radius: 5px;
+         }
+
+         button:hover {
+            background-color: black;
+            color: #21ba45;
+            border-color: #21ba45;
+         }
+
+         textarea {
+            padding: 5px;
+            border-radius: 5px;
+            font-size: medium;
+         }
+      </style>
+      <link rel="stylesheet" href="table.css" />
+   </head>
+   <body>
+      <div class="title">MoMs</div>
+      <div class="filter flex-center">
+         <select onchange="changed('user')" name="users" id="users">
+            <option value="Select user">Select user</option>
+         </select>
+         <br />
+         <select onchange="changed('date')" name="dates" id="dates">
+            <option value="Select date">Select date</option>
+         </select>
+         <br />
+      </div>
+      <table id="table">
+         <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>MoM content</th>
+            <th>Controls</th>
+         </tr>
+         <td>Suhail</td>
+         <td>2019-08-27</td>
+         <td>
+            <textarea name="" id="" cols="40" rows="5">
+Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facilis doloremque harum, tempore sapiente veniam illum officiis blanditiis nam placeat cum. Dolorem voluptate eveniet ratione quaerat dicta possimus cumque mollitia dignissimos!</textarea
+            >
+         </td>
+         <td>
+            <button onclick="savetoDb(date)">Save</button>
+         </td>
+      </table>
+   </body>
+   <script>
+      var data;
+      var table = document.getElementById("table");
+      var selectUsers = document.getElementById("users");
+      var selectDates = document.getElementById("dates");
+
+      const init = async () => {
+         const response = await fetch("/getJSONMoM");
+         data = await response.json();
+         console.log(data);
+         [...new Set(data.map((x) => x.member))].forEach((element) => {
+            var option = document.createElement("option");
+            option.value = element;
+            option.innerText = element;
+
+            selectUsers.appendChild(option);
+         });
+         data.forEach((row) => {
+            row.mom_date = row.mom_date.split("T")[0];
+            var theDate = new Date(row.mom_date);
+            theDate.setDate(theDate.getDate() + 1);
+            row.mom_date = theDate.toISOString().substring(0, 10);
+         });
+         data.forEach((element) => {
+            var option = document.createElement("option");
+            option.value = element.mom_date;
+            option.innerText = element.mom_date;
+
+            selectDates.appendChild(option);
+         });
+         createTable();
+      };
+
+      function changed(cmd) {
+         console.log(selectUsers.value, selectDates.value);
+         if (
+            selectUsers.value === "Select user" &&
+            selectDates.value === "Select date"
+         ) {
+            createTable();
+            return;
+         } else if (cmd === "user") {
+            if (selectUsers.value === "Select user") {
+               createTable();
+               return;
+            }
+            const val = selectUsers.value;
+            table.innerHTML = "";
+            data
+               .filter((x) => x.member === val)
+               .forEach((row) => {
+                  var tr = document.createElement("tr");
+                  tr.innerHTML = `<td>${row.member}</td>
+               <td>${row.mom_date}</td>
+               <td>
+                  <textarea id="${row.mom_date}" cols="80" rows="3">${row.content}</textarea>
+               </td>
+               <td style="text-align: center">
+                  <button onclick="savetoDb(\'${row.mom_date}\');" id="${row.mom_date}">Save</button>
+               </td>`;
+                  table.appendChild(tr);
+               });
+         } else {
+            if (selectDates.value === "Select date") {
+               createTable();
+               return;
+            }
+            const val = selectDates.value;
+            table.innerHTML = "";
+            data
+               .filter((x) => x.mom_date === val)
+               .forEach((row) => {
+                  var tr = document.createElement("tr");
+                  tr.innerHTML = `<td>${row.member}</td>
+               <td>${row.mom_date}</td>
+               <td>
+                  <textarea id="${row.mom_date}" cols="80" rows="3">${row.content}</textarea>
+               </td>
+               <td style="text-align: center">
+                  <button onclick="savetoDb(\'${row.mom_date}\');" id="${row.mom_date}">Save</button>
+               </td>`;
+                  table.appendChild(tr);
+               });
+         }
+      }
+
+      function createTable() {
+         data.forEach((row) => {
+            var tr = document.createElement("tr");
+            tr.innerHTML = `<td>${row.member}</td>
+              <td>${row.mom_date}</td>
+              <td>
+                 <textarea id="${row.mom_date}" cols="80" rows="3">${row.content}</textarea>
+              </td>
+              <td style="text-align: center">
+                 <button onclick="savetoDb(\'${row.mom_date}\');" id="${row.mom_date}">Save</button>
+              </td>`;
+            table.appendChild(tr);
+         });
+      }
+
+      function savetoDb(date) {
+         const id = data.filter((x) => x.mom_date === date)[0];
+         id.content = document.getElementById(id.mom_date).value;
+         console.log(id);
+         fetch("/savedata", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+            },
+            body: JSON.stringify(id),
+         });
+      }
+
+      init();
+   </script>
+</html>

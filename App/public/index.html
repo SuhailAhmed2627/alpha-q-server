@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>AlphaQ Login Page</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+         href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+         rel="stylesheet"
+      />
+      <style>
+         * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+         }
+
+         body {
+            display: flex;
+            align-items: center;
+            height: 100vh;
+            background: black;
+            color: white;
+            font-family: "Montserrat", sans-serif;
+            justify-content: center;
+            flex-direction: column;
+         }
+
+         .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+         }
+
+         .title {
+            width: 700px;
+            font-size: 50px;
+            padding-bottom: 30px;
+         }
+
+         .outer-container {
+            width: 700px;
+            height: 500px;
+            background-color: black;
+            border: 0.5px solid #21ba45;
+            border-radius: 10px;
+         }
+
+         .login-form {
+            display: flex;
+            flex-direction: column;
+         }
+
+         input {
+            font-size: 20px;
+            padding-left: 10px;
+            height: 40px;
+            width: 300px;
+            border-radius: 5px;
+         }
+
+         button {
+            color: white;
+            background-color: #21ba45;
+            align-self: center;
+            font-size: 20px;
+            height: 40px;
+            width: 200px;
+            border-radius: 5px;
+         }
+
+         button:hover {
+            background-color: black;
+            color: #21ba45;
+            border-color: #21ba45;
+         }
+      </style>
+   </head>
+   <body>
+      <script>
+         function submit() {
+            const form = document.getElementById("login-form");
+            const name = document.getElementById("name").value;
+            const password = document.getElementById("password").value;
+            const date = { name: name, password: password };
+         }
+      </script>
+      <div class="title flex-center">AlphaQ</div>
+      <div class="outer-container flex-center">
+         <form id="login-form" action="/login" method="POST" class="login-form">
+            <label for="username">Enter Username</label>
+            <input
+               aria-autocomplete="list"
+               name="username"
+               id="name"
+               placeholder="Username"
+               autocomplete="off"
+               type="text"
+            />
+            <br />
+            <br />
+            <label for="password">Enter Password</label>
+            <input
+               id="password"
+               name="password"
+               placeholder="Password"
+               type="password"
+            />
+            <br />
+            <br />
+            <input type="checkbox" id="remember-me" value="Remember Me" />
+            <label style="align-self: center" for="remember-me"
+               >Remember Me</label
+            ><br />
+            <button type="submit" onclick="submit()" id="submit">Submit</button>
+         </form>
+      </div>
+   </body>
+</html>
